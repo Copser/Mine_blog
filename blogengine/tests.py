@@ -14,6 +14,12 @@ class PostTest(TestCase):
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
 
+		# Create the site
+		site = Site()
+		site.name = 'example.com'
+		site.domain = 'example.com'
+		site.save()
+
 		# Create the Post
 		post = Post()
 		post.title = 'My first blog'
@@ -21,6 +27,7 @@ class PostTest(TestCase):
 		post.slug = 'my-first-post'
 		post.pub_date = timezone.now()
 		post.author = author
+		post.site = site
 		post.save()
 
 		# Check we can fint it 
@@ -33,6 +40,8 @@ class PostTest(TestCase):
 		self.assertEquals(only_post.title, 'My first blog')
 		self.assertEquals(only_post.text, 'This is my first blog post')
 		self.assertEquals(only_post.slug, 'my-first-post')
+		self.assertEquals(only_post.site.name, 'example.com')
+		self.assertEquals(only_post.site.domain, 'example.com')
 		self.assertEquals(only_post.pub_date.day, post.pub_date.day)
 		self.assertEquals(only_post.pub_date.month, post.pub_date.month)
 		self.assertEquals(only_post.pub_date.year, post.pub_date.year)
@@ -107,7 +116,8 @@ class AdminTest(BaseAcceptanceTest):
 			'text': 'This is my first post',
 			'pub_date_0': '2013-12-28',
 			'pub_date_1': '22:00:04',
-			'slug': 'my-first-post'
+			'slug': 'my-first-post',
+			'site': '1'
 		},
 		follow=True
 		)
@@ -125,6 +135,12 @@ class AdminTest(BaseAcceptanceTest):
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
 
+		# Create the site
+		site = Site()
+		site.name = 'example.com'
+		site.domain = 'example.com'
+		site.save()
+
 		# Create post
 		post = Post()
 		post.title = 'My first post'
@@ -132,6 +148,7 @@ class AdminTest(BaseAcceptanceTest):
 		post.slug = 'my-first-post'
 		post.pub_date = timezone.now()
 		post.author = author
+		post.site = site
 		post.save()
 
 		# Log in
@@ -143,7 +160,8 @@ class AdminTest(BaseAcceptanceTest):
 			'text': 'This is my second blog post',
 			'pub_date_0': '2013-12-28',
 			'pub_date_1': '22:00:04',
-			'slug': 'my-first-post'
+			'slug': 'my-first-post',
+			'site': '1'
 		},
 		follow=True
 		)
@@ -163,12 +181,20 @@ class AdminTest(BaseAcceptanceTest):
 		# Create the author
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
+
+		# Create the site
+		site = Site()
+		site.name = 'example.com'
+		site.domain = 'example.com'
+		site.save()
+
 		# Create the post
 		post = Post()
 		post.title = 'My first post'
 		post.text = 'This is my first blog post'
 		post.slug = 'my-first-post'
 		post.pub_date = timezone.now()
+		post.site = site
 		post.author = author
 		post.save()
 
@@ -198,6 +224,13 @@ class PostViewTest(BaseAcceptanceTest):
 		# Create the author
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
+
+		# Create the site
+		site = Site()
+		site.name = 'example.com'
+		site.domain = 'example.com'
+		site.save()
+
 		# Create the post
 		post = Post()
 		post.title = 'My first post'
@@ -205,6 +238,7 @@ class PostViewTest(BaseAcceptanceTest):
 		post.slug = 'my-first-post'
 		post.pub_date = timezone.now()
 		post.author = author
+		post.site = site
 		post.save()
 
 		# Check new post save
@@ -234,6 +268,12 @@ class PostViewTest(BaseAcceptanceTest):
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
 
+		# Create the site
+		site = Site()
+		site.name = 'example.com'
+		site.domain = 'example.com'
+		site.save()
+
 		# Create post 
 		post = Post()
 		post.title = 'My first post'
@@ -241,6 +281,7 @@ class PostViewTest(BaseAcceptanceTest):
 		post.slug = 'my-first-post'
 		post.pub_date = timezone.now()
 		post.author = author
+		post.site = site
 		post.save()
 
 		# Check new post saved
