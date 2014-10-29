@@ -1,6 +1,6 @@
 from django.test import TestCase, LiveServerTestCase, Client
 from django.utils import timezone
-from blogengine.models import Post, Category
+from blogengine.models import Post, Category, Tag
 from django.contrib.flatpages.models import FlatPage 
 from django.contrib.sites.models import Site 
 from django.contrib.auth.models import User
@@ -9,6 +9,23 @@ import markdown
 # Create your tests here
 class PostTest(TestCase):
 	"""docstring for PostTest"""
+	def test_create_tag(self):
+		# Create the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
+
+		# Check we can find it
+		all_tags = Tag.objects.all()
+		self.assertEquals(len(all_tags), 1)
+		only_tag = all_tags[0]
+		self.assertEquals(only_tag, tag)
+
+		# Check attributes
+		self.assertEquals(only_tag.name, 'python')
+		self.assertEquals(only_tag.description, 'The Python programming language')
+
 	def test_create_category(self):
 		# Create the category
 		category = Category()
@@ -33,6 +50,12 @@ class PostTest(TestCase):
 		category.description = 'The Python programming language'
 		category.save()
 
+		# Create the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
+
 		# Create the author
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
@@ -52,6 +75,10 @@ class PostTest(TestCase):
 		post.author = author
 		post.site = site
 		post.category = category
+		post.save()
+
+		# Add the tag
+		post.tags.add(tag)
 		post.save()
 
 		# Check we can fint it 
@@ -77,6 +104,14 @@ class PostTest(TestCase):
 		self.assertEquals(only_post.category.name, 'python')
 		self.assertEquals(only_post.category.description, 'The Python programming language')
 
+		# Check tags
+		post_tags = only_post.tags.all()
+		self.assertEquals(len(post_tags), 1)
+		only_post_tag = post_tags[0]
+		self.assertEquals(only_post_tag, tag)
+		self.assertEquals(only_post_tag.name, 'python')
+		self.assertEquals(only_post_tag.description, 'The Python programming language')
+
 class BaseAcceptanceTest(LiveServerTestCase):
 	def setUp(self):
 		self.client = Client()
@@ -87,6 +122,80 @@ class AdminTest(BaseAcceptanceTest):
 
 	def setUp(self):
 		self.client = Client()
+
+	def test_create_tag(self):
+		# Log in
+		self.client.login(username='bobsmith', password='password')
+
+		# Check response code 
+		response = self.client.get('/admin/blogengine/tag/add/')
+		self.assertEquals(response.status_code, 200)
+
+		# Check response code
+		response = self.client.post('/admin/blogengine/tag/add/', {
+			'name':'python',
+			'description': 'The Python programming language'
+			},
+			follow=True
+		)
+		self.assertEquals(response.status_code, 200)
+
+		# Check added successfully
+		self.assertTrue('added successfully' in response.content)
+
+		# Check new tag now in database
+		all_tags = Tag.objects.all()
+		self.assertEquals(len(all_tags), 1)
+
+	def test_edit_tag(self):
+		# Create the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
+
+		# Log in 
+		self.client.login(username='bobsmith', password='password')
+
+		# Edit the tag
+		response = self.client.post('/admin/blogengine/tag/1/', {
+			'name': 'perl',
+			'description': 'The Perl programming language'
+			}, follow=True)
+		self.assertEquals(response.status_code, 200)
+
+		# Check changed successfully
+		self.assertTrue('changed successfully' in response.content)
+
+		# Check tag ammended
+		all_tags = Tag.objects.all()
+		self.assertEquals(len(all_tags), 1)
+		only_tag = all_tags[0]
+		self.assertEquals(only_tag.name, 'perl')
+		self.assertEquals(only_tag.description, 'The Perl programming language')
+
+	def test_delete_tag(self):
+		# Create the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
+
+		# Log in
+		self.client.login(username='bobsmith', password="password")
+
+		# Delete the tag
+		response = self.client.post('/admin/blogengine/tag/1/delete/', {
+			'post': 'yes'
+			}, follow=True)
+		self.assertEquals(response.status_code, 200)
+
+		# Check deleted successfully
+		self.assertTrue('deleted successfully' in response.content)
+
+		# Check tag deleted
+		all_tags = Tag.objects.all()
+		self.assertEquals(len(all_tags), 0)
 
 	def test_create_category(self):
 		# Log in
@@ -209,6 +318,12 @@ class AdminTest(BaseAcceptanceTest):
 		category.description = 'The Python programming language'
 		category.save()
 
+		# Creta the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
+
 		# Log in
 		self.client.login(username='bobsmith', password="password")
 
@@ -224,7 +339,8 @@ class AdminTest(BaseAcceptanceTest):
 			'pub_date_1': '22:00:04',
 			'slug': 'my-first-post',
 			'site': '1',
-			'category': '1'
+			'category': '1',
+			'tags': '1'
 		},
 		follow=True
 		)
@@ -243,6 +359,12 @@ class AdminTest(BaseAcceptanceTest):
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
+
+		# Create the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
 
 		# Create the author
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
@@ -263,6 +385,8 @@ class AdminTest(BaseAcceptanceTest):
 		post.author = author
 		post.site = site
 		post.save()
+		post.tags.add(tag)
+		post.save()
 
 		# Log in
 		self.client.login(username='bobsmith', password="password")
@@ -275,7 +399,8 @@ class AdminTest(BaseAcceptanceTest):
 			'pub_date_1': '22:00:04',
 			'slug': 'my-first-post',
 			'site': '1',
-			'category': '1'
+			'category': '1',
+			'tags': '1'
 		},
 		follow=True
 		)
@@ -298,6 +423,12 @@ class AdminTest(BaseAcceptanceTest):
 		category.description = 'The Python programming language'
 		category.save()
 
+		# Create the tag
+		tag = Tag()
+		tag.name = 'python'
+		tag.description = 'The Python programming language'
+		tag.save()
+
 		# Create the author
 		author = User.objects.create_user('testuser', 'user@example.com', 'password')
 		author.save()
@@ -317,6 +448,8 @@ class AdminTest(BaseAcceptanceTest):
 		post.site = site
 		post.author = author
 		post.category = category
+		post.save()
+		post.tags.add(tag)
 		post.save()
 
 		# Check new post saved
