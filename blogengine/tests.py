@@ -15,6 +15,7 @@ class PostTest(TestCase):
 		tag = Tag()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
+		tag.slug = 'python'
 		tag.save()
 
 		# Check we can find it
@@ -26,12 +27,14 @@ class PostTest(TestCase):
 		# Check attributes
 		self.assertEquals(only_tag.name, 'python')
 		self.assertEquals(only_tag.description, 'The Python programming language')
+		self.assertEquals(only_tag.slug, 'python')
 
 	def test_create_category(self):
 		# Create the category
 		category = Category()
 		category.name = 'python'
 		category.description = 'The Python programming language'
+		category.slug = 'python'
 		category.save()
 
 		# Check we can find it
@@ -43,6 +46,7 @@ class PostTest(TestCase):
 		# Check attributes
 		self.assertEquals(only_category.name, 'python')
 		self.assertEquals(only_category.description, 'The Python programming language')
+		self.assertEquals(only_category.slug, 'python')
 
 	def test_create_post(self):
 		# Create the category
