@@ -475,6 +475,18 @@ class AdminTest(BaseAcceptanceTest):
 
 
 class PostViewTest(BaseAcceptanceTest):
+	def test_nonexistenet_category_page(self):
+		category_url = '/category/blah/'
+		response = self.client.get(category_url)
+		self.assertEquals(response.status_code, 200)
+		self.assertTrue('No posts found' in  response.content)
+
+	def test_nonexistent_tag_page(self):
+		tag_url = '/tag/blah/'
+		response = self.client.get(tag_url)
+		self.assertEquals(response.status_code, 200)
+		self.assertTrue( 'No posts found' in response.content)
+
 	def test_index(self):
 		# Create the category
 		category = Category()
