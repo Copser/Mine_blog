@@ -4,7 +4,7 @@ from blogengine.models import Post, Category, Tag
 from django.contrib.flatpages.models import FlatPage 
 from django.contrib.sites.models import Site 
 from django.contrib.auth.models import User
-import markdown
+import markdown2
 import feedparser
 
 # Create your tests here
@@ -574,7 +574,7 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue(post.title in response.content)
 
 		# Check the post text is in the response
-		self.assertTrue(markdown.markdown(post.text) in response.content)
+		self.assertTrue(markdown2.markdown(post.text) in response.content)
 
 		# Check the post category is in the response
 		self.assertTrue(post.category.name in response.content)
@@ -651,7 +651,7 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue(post_tag.name in response.content)
 
 		# Check the post text is in the response
-		self.assertTrue(markdown.markdown(post.text) in response.content)
+		self.assertTrue(markdown2.markdown(post.text) in response.content)
 
 		# Check the post date is in the response
 		self.assertTrue(str(post.pub_date.year) in response.content)
@@ -706,7 +706,7 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue(post.tags.all()[0].name in response.content)
 
 		# Check the post text is in the response
-		self.assertTrue(markdown.markdown(post.text) in response.content)
+		self.assertTrue(markdown2.markdown(post.text) in response.content)
 
 		# Check the post data is in the response
 		self.assertTrue(str(post.pub_date.year) in response.content)
@@ -761,7 +761,7 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue(post.category.name in response.content)
 
 		# Check the post text is in the response
-		self.assertTrue(markdown.markdown(post.text) in response.content)
+		self.assertTrue(markdown2.markdown(post.text) in response.content)
 
 		# Check the post data is in the response
 		self.assertTrue(str(post.pub_date.year) in response.content)
