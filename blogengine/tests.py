@@ -70,6 +70,24 @@ class SiteFactory(factory.django.DjangoModelFactory):
 	name = 'example.com'
 	domain = 'example.com'
 
+class PostFactory(factory.django.DjangoModelFactory):
+	class Meta:
+		model = Post
+		django_get_or_create = (
+			'title',
+			'text',
+			'slug',
+			'pub_date'
+		)
+
+	title = 'My first post'
+	text = 'This is my first blog post'
+	slug = 'my-first-post'
+	pub_date = timezone.now()
+	author = factory.SubFactory(AuthorFactory)
+	site = factory.SubFactory(SiteFactory)
+	category = factory.SubFactory(CategoryFactory)
+
 class PostTest(TestCase):
 	"""docstring for PostTest"""
 	def test_create_tag(self):
