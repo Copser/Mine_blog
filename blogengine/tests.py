@@ -9,6 +9,20 @@ import feedparser
 import factory.django
 
 # Create your tests here
+class TagFactory(factory.django.DjangoModelFactory):
+	class Meta:
+		model = Tag
+		django_get_or_create = (
+			'name',
+			'description',
+			'slug'
+		)
+
+	name = 'python'
+	description = 'The Python programming language'
+	slug = 'python'
+
+
 class CategoryFactory(factory.django.DjangoModelFactory):
 	class Meta:
 		model = Category
@@ -37,7 +51,7 @@ class PostTest(TestCase):
 	"""docstring for PostTest"""
 	def test_create_tag(self):
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.slug = 'python'
@@ -81,7 +95,7 @@ class PostTest(TestCase):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -215,7 +229,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_edit_tag(self):
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -242,7 +256,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_delete_tag(self):
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -385,7 +399,7 @@ class AdminTest(BaseAcceptanceTest):
 		category.save()
 
 		# Creta the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -427,7 +441,7 @@ class AdminTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -490,7 +504,7 @@ class AdminTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -548,7 +562,7 @@ class PostViewTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory(name='perl', description='The Perl programming language')
 		tag.name = 'perl'
 		tag.description = 'The Perl programming language'
 		tag.save()
@@ -621,7 +635,7 @@ class PostViewTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory(name='perl', description='The Perl programming language')
 		tag.name = 'perl'
 		tag.description = 'The Perl programming language'
 		tag.save()
@@ -685,7 +699,7 @@ class PostViewTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory(name='perl', description='The Perl programming language')
 		tag.name = 'perl'
 		tag.description = 'The Perl programming language'
 		tag.save()
@@ -749,7 +763,7 @@ class PostViewTest(BaseAcceptanceTest):
 
 	def test_tag_page(self):
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
@@ -867,7 +881,7 @@ class FeedTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the tag
-		tag = Tag()
+		tag = TagFactory()
 		tag.name = 'python'
 		tag.description = 'The Python programming language'
 		tag.save()
