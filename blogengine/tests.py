@@ -6,8 +6,33 @@ from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 import markdown2
 import feedparser
+import factory.django
 
 # Create your tests here
+class CategoryFactory(factory.django.DjangoModelFactory):
+	class Meta:
+		model = Category
+		django_get_or_create = (
+			'name',
+			'description',
+			'slug'
+		)
+
+	name = 'python'
+	description = 'The Python programming language'
+	slug = 'python'
+
+
+class SiteFactory(factory.django.DjangoModelFactory):
+	class Meta:
+		model = Site
+		django_get_or_create = (
+			'name',
+			'domain'
+		)
+	name = 'example.com'
+	domain = 'example.com'
+
 class PostTest(TestCase):
 	"""docstring for PostTest"""
 	def test_create_tag(self):
@@ -31,7 +56,7 @@ class PostTest(TestCase):
 
 	def test_create_category(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.slug = 'python'
@@ -50,7 +75,7 @@ class PostTest(TestCase):
 
 	def test_create_post(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -66,7 +91,7 @@ class PostTest(TestCase):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -130,7 +155,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_create_post_without_tag(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -264,7 +289,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_edit_category(self):
 		# Create category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -291,7 +316,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_delete_category(self):
 		# Create category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -354,7 +379,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_create_post(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -396,7 +421,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_edit_post(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -412,7 +437,7 @@ class AdminTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -459,7 +484,7 @@ class AdminTest(BaseAcceptanceTest):
 
 	def test_delete_post(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -475,7 +500,7 @@ class AdminTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -517,7 +542,7 @@ class AdminTest(BaseAcceptanceTest):
 class PostViewTest(BaseAcceptanceTest):
 	def test_clear_cache(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -533,7 +558,7 @@ class PostViewTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -590,7 +615,7 @@ class PostViewTest(BaseAcceptanceTest):
 
 	def test_index(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -606,7 +631,7 @@ class PostViewTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -654,7 +679,7 @@ class PostViewTest(BaseAcceptanceTest):
 
 	def test_post_page(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -670,7 +695,7 @@ class PostViewTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -734,7 +759,7 @@ class PostViewTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -779,7 +804,7 @@ class PostViewTest(BaseAcceptanceTest):
 
 	def test_category_page(self):
 		# Create the category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -789,7 +814,7 @@ class PostViewTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
@@ -836,7 +861,7 @@ class PostViewTest(BaseAcceptanceTest):
 class FeedTest(BaseAcceptanceTest):
 	def test_all_post_feed(self):
 		# Create the Category
-		category = Category()
+		category = CategoryFactory()
 		category.name = 'python'
 		category.description = 'The Python programming language'
 		category.save()
@@ -852,7 +877,7 @@ class FeedTest(BaseAcceptanceTest):
 		author.save()
 
 		# Create the site
-		site = Site()
+		site = SiteFactory()
 		site.name = 'example.com'
 		site.domain = 'example.com'
 		site.save()
