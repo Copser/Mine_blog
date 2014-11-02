@@ -515,6 +515,67 @@ class AdminTest(BaseAcceptanceTest):
 
 
 class PostViewTest(BaseAcceptanceTest):
+	def test_clear_cache(self):
+		# Create the category
+		category = Category()
+		category.name = 'python'
+		category.description = 'The Python programming language'
+		category.save()
+
+		# Create the tag
+		tag = Tag()
+		tag.name = 'perl'
+		tag.description = 'The Perl programming language'
+		tag.save()
+
+		# Create the author
+		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author.save()
+
+		# Create the site
+		site = Site()
+		site.name = 'example.com'
+		site.domain = 'example.com'
+		site.save()
+
+		# Create the post
+		post = Post()
+		post.title = 'My first post'
+		post.text = 'This is [my first blog post](http://127.0.0.1:8000/)'
+		post.slug = 'my-first-post'
+		post.pub_date = timezone.now()
+		post.author = author
+		post.site = site
+		post.category = category
+		post.save()
+		post.tags.add(tag)
+
+		# Check new post saved
+		all_posts = Post.objects.all()
+		self.assertEquals(len(all_posts), 1)
+
+		# Fetch the index
+		response = self.client.get('/')
+		self.assertEquals(response.status_code, 200)
+
+		# Create the secons post
+		post = Post()
+		post.title = 'My second post'
+		post.text = 'This is [my second blog post](http://127.0.0.1:8000/)'
+		post.slug = 'my-second-post'
+		post.pub_date = timezone.now()
+		post.author = author
+		post.site = site
+		post.category = category
+		post.save()
+		post.tags.add(tag)
+
+		# Fetch the index again
+		response = self.client.get('/')
+
+		# Check second post present
+		self.assertTrue('my second blog post' in response.content)
+
 	def test_nonexistenet_category_page(self):
 		category_url = '/category/blah/'
 		response = self.client.get(category_url)
