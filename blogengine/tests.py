@@ -9,6 +9,16 @@ import feedparser
 import factory.django
 
 # Create your tests here
+class AuthorFactory(factory.django.DjangoModelFactory):
+	class Meta:
+		model = User
+		django_get_or_create = ('username', 'email', 'password')
+
+	username = 'testuser'
+	email = 'user@example.com'
+	password = 'password'
+
+
 class TagFactory(factory.django.DjangoModelFactory):
 	class Meta:
 		model = Tag
@@ -101,7 +111,7 @@ class PostTest(TestCase):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -447,7 +457,7 @@ class AdminTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -510,7 +520,7 @@ class AdminTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -568,7 +578,7 @@ class PostViewTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -641,7 +651,7 @@ class PostViewTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -705,7 +715,7 @@ class PostViewTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -769,7 +779,7 @@ class PostViewTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -824,7 +834,7 @@ class PostViewTest(BaseAcceptanceTest):
 		category.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
@@ -887,7 +897,7 @@ class FeedTest(BaseAcceptanceTest):
 		tag.save()
 
 		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
+		author = AuthorFactory()
 		author.save()
 
 		# Create the site
