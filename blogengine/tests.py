@@ -9,6 +9,19 @@ import feedparser
 import factory.django
 
 # Create your tests here
+class FlatPageFactory(factory.django.DjangoModelFactory):
+	class Meta:
+		model = FlatPage
+		django_get_or_create = (
+			'url',
+			'title',
+			'content'
+		)
+
+	url = '/about/'
+	title = 'About me'
+	content = 'All about me'
+
 class AuthorFactory(factory.django.DjangoModelFactory):
 	class Meta:
 		model = User
@@ -945,7 +958,7 @@ class FeedTest(BaseAcceptanceTest):
 class FlatPageViewTest(BaseAcceptanceTest):
 	def test_create_flat_page(self):
 		# Create flat page 
-		page = FlatPage()
+		page = FlatPageFactory()
 		page.url = '/about/'
 		page.title = 'About me'
 		page.content = 'All about me'
