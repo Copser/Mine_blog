@@ -122,26 +122,14 @@ class PostTest(TestCase):
 		self.assertEquals(only_category.slug, 'python')
 
 	def test_create_post(self):
-		# Create the category
-		category = CategoryFactory()
-		
-		# Create the tag
-		tag = TagFactory()
-		
-		# Create the author
-		author = AuthorFactory()
-		
-		# Create the site
-		site = SiteFactory()
-
 		# Create the Post
 		post = PostFactory()
-		
 
+		# Create the tag
+		tag = TagFactory()
 		# Add the tag
 		post.tags.add(tag)
 		
-
 		# Check we can fint it 
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts), 1)
@@ -430,22 +418,16 @@ class AdminTest(BaseAcceptanceTest):
 		self.assertEquals(len(all_posts), 1)
 
 	def test_edit_post(self):
+		# Create post
+		post = PostFactory()
+
 		# Create the category
 		category = CategoryFactory()
 		
 		# Create the tag
 		tag = TagFactory()
-
-		# Create the author
-		author = AuthorFactory()
-		
-		# Create the site
-		site = SiteFactory()
-		
-		# Create post
-		post = PostFactory()
 		post.tags.add(tag)
-		
+
 		# Log in
 		self.client.login(username='bobsmith', password="password")
 
@@ -475,20 +457,11 @@ class AdminTest(BaseAcceptanceTest):
 		self.assertEquals(only_post.text, 'This is my second blog post')
 
 	def test_delete_post(self):
-		# Create the category
-		category = CategoryFactory()
+		# Create the post
+		post = PostFactory()
 		
 		# Create the tag
 		tag = TagFactory()
-		
-		# Create the author
-		author = AuthorFactory()
-		
-		# Create the site
-		site = SiteFactory()
-		
-		# Create the post
-		post = PostFactory()
 		post.tags.add(tag)
 		
 		# Check new post saved
@@ -514,41 +487,11 @@ class AdminTest(BaseAcceptanceTest):
 
 class PostViewTest(BaseAcceptanceTest):
 	def test_clear_cache(self):
-		# Create the category
-		category = Category()
-		category.name = 'python'
-		category.description = 'The Python programming language'
-		category.save()
-
-		# Create the tag
-		tag = Tag()
-		tag.name = 'perl'
-		tag.description = 'The Perl programming language'
-		tag.save()
-		
-		# Create the author
-		author = User.objects.create_user('testuser', 'user@example.com', 'password')
-		author.save()
-
-		# Create the site
-		site = Site()
-		site.name = 'example.com'
-		site.domain = 'example.com'
-		site.save()
-
 		# Create the first post
-		post = Post()
-		post.title = 'My first post'
-		post.text = 'This is [my first blog post](http://127.0.0.1:8000/)'
-		post.slug = 'my-first-post'
-		post.pub_date = timezone.now()
-		post.author = author
-		post.site = site
-		post.category = category
-		post.save()
+		post = PostFactory(text = 'This is [my first blog post](http://127.0.0.1:8000/)')
+		tag = TagFactory(name='perl', description='The Perl programming language')
 		post.tags.add(tag)
-		post.save()
-
+		
 		# Check new post saved
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts), 1)
@@ -558,18 +501,9 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertEquals(response.status_code, 200)
 
 		# Create the second post
-		post = Post()
-		post.title = 'My second post'
-		post.text = 'This is [my second blog post](http://127.0.0.1:8000/)'
-		post.slug = 'my-first-post'
-		post.pub_date = timezone.now()
-		post.author = author
-		post.site = site
-		post.category = category
-		post.save()
+		post = PostFactory(title='My second post',text='This is [my second blog post](http://127.0.0.1:8000/)', slug='my-second-post')
 		post.tags.add(tag)
-		post.save()
-
+		
 		# Fetch the index again
 		response = self.client.get('/')
 
@@ -589,26 +523,13 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue( 'No posts found' in response.content)
 
 	def test_index(self):
-		# Create the category
-		category = CategoryFactory()
-		
-
-		# Create the tag
-		tag = TagFactory(name='perl', description='The Perl programming language')
-		
-
-		# Create the author
-		author = AuthorFactory()
-		
-
-		# Create the site
-		site = SiteFactory()
-		
-
 		# Create the post
 		post = PostFactory(text = 'This is [my first blog post](http://127.0.0.1:8000/)')
+		
+		# Create the tag
+		tag = TagFactory(name='perl', description='The Perl programming language')
 		post.tags.add(tag)
-
+		
 		# Check new post save
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts), 1)
@@ -639,27 +560,13 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue('<a href="http://127.0.0.1:8000/">my first blog post</a>' in response.content)
 
 	def test_post_page(self):
-		# Create the category
-		category = CategoryFactory()
-		
-
-		# Create the tag
-		tag = TagFactory(name='perl', description='The Perl programming language')
-		
-
-		# Create the author
-		author = AuthorFactory()
-		
-
-		# Create the site
-		site = SiteFactory()
-		
-
 		# Create post 
 		post = PostFactory(text = 'This is [my first blog post](http://127.0.0.1:8000/)')
+		
+		# Create the tag
+		tag = TagFactory(name='perl', description='The Perl programming language')
 		post.tags.add(tag)
 		
-
 		# Check new post saved
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts), 1)
@@ -695,22 +602,19 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue('<a href="http://127.0.0.1:8000/">my first blog post</a>' in response.content)
 
 	def test_tag_page(self):
-		# Create the tag
-		tag = TagFactory()
-		
-
 		# Create the author
 		author = AuthorFactory()
 		
-
 		# Create the site
 		site = SiteFactory()
 		
-
 		# Create the post
 		post = PostFactory(text = 'This is [my first blog post](http://127.0.0.1:8000/)')
+		
+		# Create the tag
+		tag = TagFactory()
 		post.tags.add(tag)
-
+		
 		# Check new post saved
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts), 1)
@@ -739,22 +643,9 @@ class PostViewTest(BaseAcceptanceTest):
 		self.assertTrue('<a href="http://127.0.0.1:8000/">my first blog post</a>' in response.content)
 
 	def test_category_page(self):
-		# Create the category
-		category = CategoryFactory()
-		
-
-		# Create the author
-		author = AuthorFactory()
-		
-
-		# Create the site
-		site = SiteFactory()
-		
-
 		# Create the post
 		post = PostFactory(text = 'This is [my first blog post](http://127.0.0.1:8000/)')
 		
-
 		# Check new post saved
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts), 1)
@@ -784,28 +675,41 @@ class PostViewTest(BaseAcceptanceTest):
 
 
 class FeedTest(BaseAcceptanceTest):
+	def test_category_feed(self):
+		# Create the post
+		post = PostFactory(text='This is my *first* blog post')
+
+		# Create another post in a diffrent category
+		category = CategoryFactory(name='perl', description='The Perl programming language', slug='perl')
+		post2 = PostFactory(text='This is my *second* blog post', title='My second post', slug='my-second-post', category=category)
+
+		#Fetch the feed
+		response = self.client.get('/feeds/posts/category/python/')
+		self.assertEquals(response.status_code, 200)
+
+		# Parse the feed
+		feed = feedparser.parse(response.content)
+
+		# Check length
+		self.assertEquals(len(feed.entries), 1)
+
+		# Check post retrieved is the correct one
+		feed_post = feed.entries[0]
+		self.assertEquals(feed_post.title, post.title)
+		self.assertTrue('This is my <em>first</em> blog post' in  feed_post.description)
+
+		# Check other post is not in this feed
+		self.assertTrue('This is my <em>second</em> blog post' not in response.content)
+
+
 	def test_all_post_feed(self):
-		# Create the Category
-		category = CategoryFactory()
-		
+		# Create the post
+		post = PostFactory(text = 'This is my *first* blog post')
 
 		# Create the tag
 		tag = TagFactory()
-		
-
-		# Create the author
-		author = AuthorFactory()
-		
-
-		# Create the site
-		site = SiteFactory()
-		
-
-		# Create the post
-		post = PostFactory(text = 'This is my *first* blog post')
 		post.tags.add(tag)
 		
-
 		# Check we can find it
 		all_posts = Post.objects.all()
 		self.assertEquals(len(all_posts),1)
@@ -834,7 +738,6 @@ class FlatPageViewTest(BaseAcceptanceTest):
 		# Create flat page 
 		page = FlatPageFactory()
 		
-
 		# Add the site 
 		page.sites.add(Site.objects.all()[0])
 		page.save()
