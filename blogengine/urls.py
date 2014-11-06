@@ -35,5 +35,8 @@ urlpatterns = patterns('',
 
 	# Tag RSS feed
 	url(r'^feeds/posts/tag/(?P<slug>[a-zA-Z0-9-]+)/?$', TagPostsFeed()),
+
+	# Search posts
+	url(r'^search', 'blogengine.views.getSearchResults'),
 )
 
