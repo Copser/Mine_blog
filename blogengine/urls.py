@@ -2,6 +2,15 @@ from django.conf.urls import patterns, url
 from django.views.generic import ListView, DetailView
 from blogengine.models import Post, Category, Tag
 from blogengine.views import CategoryListView, TagListView, PostsFeed, CategoryPostsFeed, TagPostsFeed
+from django.contrib.sitemaps.views import sitemap
+from blogengine.sitemap import PostSitemap, FlatpageSitemap
+
+
+# Define sitemaps
+sitemaps = {
+	'posts': PostSitemap,
+	'pages': FlatpageSitemap
+}
 
 urlpatterns = patterns('',
 	# Index
@@ -38,5 +47,10 @@ urlpatterns = patterns('',
 
 	# Search posts
 	url(r'^search', 'blogengine.views.getSearchResults'),
+
+	# Sitemap
+	url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
+		name='django.contrib.sitemaps.views.sitemap'),
+
 )
 
