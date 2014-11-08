@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.syndication',
     'django.contrib.sitemaps',
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (

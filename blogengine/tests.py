@@ -610,7 +610,7 @@ class PostViewTest(BaseAcceptanceTest):
 	def test_tag_page(self):
 		# Create the author
 		author = AuthorFactory()
-		
+
 		# Create the site
 		site = SiteFactory()
 		
