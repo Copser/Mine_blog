@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Quick-start development settings - unsuitable for production
@@ -20,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '*_$&zu+xl#vjn22+wl8ur5na(sbnmv-svrm+$gt0-9b(57tsc1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -45,6 +46,8 @@ INSTALLED_APPS = (
     'debug_toolbar',
 )
 
+SITE_ID = 1
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,7 +64,7 @@ ROOT_URLCONF = 'django_tutorial_blog_ng.urls'
 
 WSGI_APPLICATION = 'django_tutorial_blog_ng.wsgi.application'
 
-SITE_ID = 1
+
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -91,7 +94,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Template directory
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
 
 INSTALLED_APPS += ('django_jenkins',)
 JENKINS_TASKS = (
