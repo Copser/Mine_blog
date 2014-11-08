@@ -191,7 +191,7 @@ class AdminTest(BaseAcceptanceTest):
 			'pub_date_1': '22:00:04',
 			'slug': 'my-first-post',
 			'site': '1',
-			'category': '1'
+			'category': str(category.pk)
 		},
 		follow=True
 		)
@@ -237,7 +237,7 @@ class AdminTest(BaseAcceptanceTest):
 		self.client.login(username='bobsmith', password='password')
 
 		# Edit the tag
-		response = self.client.post('/admin/blogengine/tag/1/', {
+		response = self.client.post('/admin/blogengine/tag/' + str(tag.pk) + '/', {
 			'name': 'perl',
 			'description': 'The Perl programming language'
 			}, follow=True)
@@ -261,7 +261,7 @@ class AdminTest(BaseAcceptanceTest):
 		self.client.login(username='bobsmith', password="password")
 
 		# Delete the tag
-		response = self.client.post('/admin/blogengine/tag/1/delete/', {
+		response = self.client.post('/admin/blogengine/tag/' + str(tag.pk) + '/delete/', {
 			'post': 'yes'
 			}, follow=True)
 		self.assertEquals(response.status_code, 200)
@@ -305,7 +305,7 @@ class AdminTest(BaseAcceptanceTest):
 		self.client.login(username='bobsmith', password='password')
 
 		# Edit the category
-		response = self.client.post('/admin/blogengine/category/1/', {
+		response = self.client.post('/admin/blogengine/category/' + str(category.pk) + '/', {
 			'name': 'perl',
 			'description': 'The Perl programming language'
 			}, follow=True)
@@ -322,14 +322,14 @@ class AdminTest(BaseAcceptanceTest):
 		self.assertEquals(only_category.description, 'The Perl programming language')
 
 	def test_delete_category(self):
-		# Create category
+		# Create the category
 		category = CategoryFactory()
-		
+
 		# Log in
 		self.client.login(username='bobsmith', password='password')
 
 		# Delete the category
-		response = self.client.post('/admin/blogengine/category/1/delete/', {
+		response = self.client.post('/admin/blogengine/category/' + str(category.pk) + '/delete/', {
 			'post': 'yes'
 		}, follow=True)
 		self.assertEquals(response.status_code, 200)
@@ -342,7 +342,7 @@ class AdminTest(BaseAcceptanceTest):
 		self.assertEquals(len(all_categories), 0)
 
 	def test_login(self):
-		response = self.client.get('/admin/')
+		response = self.client.get('/admin/', follow=True)
 		
 
 		self.assertEquals(response.status_code, 200)
@@ -375,7 +375,7 @@ class AdminTest(BaseAcceptanceTest):
 		self.client.logout()
 
 		# Check response code
-		response = self.client.get('/admin/')
+		response = self.client.get('/admin/', follow=True)
 		self.assertEquals(response.status_code, 200)
 
 		# Check 'log in' in response
@@ -403,8 +403,8 @@ class AdminTest(BaseAcceptanceTest):
 			'pub_date_1': '22:00:04',
 			'slug': 'my-first-post',
 			'site': '1',
-			'category': '1',
-			'tags': '1'
+			'category': str(category.pk),
+			'tags': str(tag.pk)
 		},
 		follow=True
 		)
@@ -432,15 +432,15 @@ class AdminTest(BaseAcceptanceTest):
 		self.client.login(username='bobsmith', password="password")
 
 		# Edit the post
-		response = self.client.post('/admin/blogengine/post/1/', {
+		response = self.client.post('/admin/blogengine/post/' + str(post.pk) + '/', {
 			'title': 'My second post',
 			'text': 'This is my second blog post',
 			'pub_date_0': '2013-12-28',
 			'pub_date_1': '22:00:04',
 			'slug': 'my-first-post',
 			'site': '1',
-			'category': '1',
-			'tags': '1'
+			'category': str(category.pk),
+			'tags': str(tag.pk)
 		},
 		follow=True
 		)
@@ -472,7 +472,7 @@ class AdminTest(BaseAcceptanceTest):
 		self.client.login(username='bobsmith', password="password")
 
 		# Delete the post
-		response = self.client.post('/admin/blogengine/post/1/delete/', {
+		response = self.client.post('/admin/blogengine/post/' + str(post.pk) + '/delete/', {
 			'post': 'yes'
 		}, follow=True)
 		self.assertEquals(response.status_code, 200)
